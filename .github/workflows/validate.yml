@@ -300,7 +300,7 @@ jobs:
         echo "✅ Security scan completed"
         exit 0
     
-    # FINAL SUMMARY - Fixed version
+# FINAL SUMMARY - Simplified version that won't crash
     - name: "📊 Generate Final Report"
       if: always()
       run: |
@@ -309,74 +309,69 @@ jobs:
         echo "=========================================="
         echo ""
         
+        # Count passes (simple approach)
         PASS_COUNT=0
-        TOTAL=7
         
         # Check each step outcome
-        if [ "${{ steps.check-deps.outcome }}" = "success" ]; then
+        if [ "${{ steps.check-deps.outcome }}" == "success" ]; then
           echo "✅ Requirements Installation: PASSED"
-          ((PASS_COUNT++))
+          PASS_COUNT=$((PASS_COUNT + 1))
         else
           echo "❌ Requirements Installation: FAILED"
         fi
         
-        if [ "${{ steps.check-syntax.outcome }}" = "success" ]; then
+        if [ "${{ steps.check-syntax.outcome }}" == "success" ]; then
           echo "✅ Python Syntax: PASSED"
-          ((PASS_COUNT++))
+          PASS_COUNT=$((PASS_COUNT + 1))
         else
           echo "❌ Python Syntax: FAILED"
         fi
         
-        if [ "${{ steps.check-imports.outcome }}" = "success" ]; then
+        if [ "${{ steps.check-imports.outcome }}" == "success" ]; then
           echo "✅ Import Testing: PASSED"
-          ((PASS_COUNT++))
+          PASS_COUNT=$((PASS_COUNT + 1))
         else
           echo "❌ Import Testing: FAILED"
         fi
         
-        if [ "${{ steps.check-deprecation.outcome }}" = "success" ]; then
+        if [ "${{ steps.check-deprecation.outcome }}" == "success" ]; then
           echo "✅ Deprecation Check: PASSED"
-          ((PASS_COUNT++))
+          PASS_COUNT=$((PASS_COUNT + 1))
         else
           echo "❌ Deprecation Check: FAILED"
         fi
         
-        if [ "${{ steps.check-tests.outcome }}" = "success" ]; then
+        if [ "${{ steps.check-tests.outcome }}" == "success" ]; then
           echo "✅ Test Execution: PASSED"
-          ((PASS_COUNT++))
+          PASS_COUNT=$((PASS_COUNT + 1))
         else
           echo "❌ Test Execution: FAILED"
         fi
         
-        if [ "${{ steps.check-docs.outcome }}" = "success" ]; then
+        if [ "${{ steps.check-docs.outcome }}" == "success" ]; then
           echo "✅ Documentation: PASSED"
-          ((PASS_COUNT++))
+          PASS_COUNT=$((PASS_COUNT + 1))
         else
           echo "❌ Documentation: FAILED"
         fi
         
-        if [ "${{ steps.check-security.outcome }}" = "success" ]; then
+        if [ "${{ steps.check-security.outcome }}" == "success" ]; then
           echo "✅ Security Scan: PASSED"
-          ((PASS_COUNT++))
+          PASS_COUNT=$((PASS_COUNT + 1))
         else
           echo "❌ Security Scan: FAILED"
         fi
         
         echo ""
         echo "=========================================="
-        echo "TOTAL: $PASS_COUNT out of $TOTAL checks passed"
+        echo "TOTAL: $PASS_COUNT out of 7 checks passed"
         echo "=========================================="
         echo ""
         
         if [ $PASS_COUNT -ge 5 ]; then
           echo "🟢 PROJECT STATUS: FUNCTIONAL"
           echo "    → Mark as GREEN in Excel"
-          echo ""
-          echo "This project has proper structure and dependencies."
         else
           echo "🔴 PROJECT STATUS: NOT FUNCTIONAL" 
           echo "    → Mark as RED in Excel"
-          echo ""
-          echo "This project has significant issues."
         fi
-
